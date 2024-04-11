@@ -21,12 +21,27 @@
     <ClCompile Include="game.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="world.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="world.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="robot.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="utils.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="starsweeper.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="vec3.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>
