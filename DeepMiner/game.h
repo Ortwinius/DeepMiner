@@ -8,10 +8,11 @@ public:
 	~Game();
 	void handleInput();
 	void update();
-	void renderUI();
+	void render();
 	const bool isRunning() { return running; }
 private:
-	void init();
+	void initGame();
 	bool running = false;
 	World* world;
+	Direction movementDirection;
 };

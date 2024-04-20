@@ -24,6 +24,9 @@
     <ClCompile Include="world.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="robot.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h">
@@ -42,6 +45,9 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="vec3.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="constants.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

@@ -11,7 +11,7 @@ int main()
     {
         game.handleInput();
         game.update();
-        game.renderUI();
+        game.render();
     }
 
     return 0;

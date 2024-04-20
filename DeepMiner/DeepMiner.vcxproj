@@ -129,9 +129,11 @@
   <ItemGroup>
     <ClCompile Include="game.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="robot.cpp" />
     <ClCompile Include="world.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="constants.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="robot.h" />
     <ClInclude Include="starsweeper.h" />
