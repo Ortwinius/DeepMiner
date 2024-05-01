@@ -4,7 +4,7 @@ Vec3 Robot::getDirectionVec(const Direction& toMove)
 {
 	switch (toMove)
 	{
-	case idle:
+	case Direction::idle:
 		return Vec3(0, 0, 0);
 	case forward:
 		return Vec3(-1, 0, 0);
@@ -23,3 +23,5 @@ Vec3 Robot::getDirectionVec(const Direction& toMove)
 	return Vec3(0, 0, 0);
 
 }
+
+

@@ -127,13 +127,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="block.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="robot.cpp" />
+    <ClCompile Include="utils.cpp" />
     <ClCompile Include="world.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="block.h" />
+    <ClInclude Include="common.h" />
     <ClInclude Include="constants.h" />
+    <ClInclude Include="earthcrusher.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="robot.h" />
     <ClInclude Include="starsweeper.h" />

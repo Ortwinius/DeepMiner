@@ -27,6 +27,12 @@
     <ClCompile Include="robot.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="utils.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="block.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h">
@@ -48,6 +54,15 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="constants.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="common.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="earthcrusher.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="block.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

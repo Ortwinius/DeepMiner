@@ -1,8 +1,10 @@
 #pragma once
 
-#include "vec3.h"
+#include <random>
 #include "constants.h"
 
+int generateRandomNumber(std::mt19937& gen, int min, int max);
 
+const char convertBlockToChar(const BlockType& blockType);
 
 

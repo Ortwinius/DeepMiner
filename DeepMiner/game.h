@@ -1,5 +1,6 @@
 #pragma once
 #include "world.h"
+#include "constants.h"
 
 class Game
 {
@@ -14,5 +15,5 @@ private:
 	void initGame();
 	bool running = false;
 	World* world;
-	Direction movementDirection;
+	Direction playerMovementDir;
 };

@@ -1,7 +1,10 @@
 #include "world.h"
 
 World::World()
+	: rd()
+	, gen(rd())
 {
+	srand(time(0));
 	initWorld();
 }
 
@@ -39,18 +42,33 @@ void World::initWorld()
 	
 	// clear and init worldgrid vector to 5*5*10
 	worldGrid.clear();
-	std::vector<std::vector<std::vector<int>>> worldGrid
-		(WorldDimensions::dimX, std::vector<std::vector<int>>
-			(WorldDimensions::dimY, std::vector<int>(WorldDimensions::dimZ)));
+	worldGrid.resize(WorldDimensions::dimX, std::vector<std::vector<Block>>
+		(WorldDimensions::dimY, std::vector<Block>(WorldDimensions::dimZ)));
 
+	for (int z = 0; z < WorldDimensions::dimZ; z++)
+	{
+		for (int y = 0; y < WorldDimensions::dimY; y++)
+		{
+			for (int x = 0; x < WorldDimensions::dimX; x++)
+			{
+				// create random blocks with gen-randomizer
+				worldGrid[x][y][z] = Block(gen);
+			}
+		}
+	}
 
 }
 
 void World::updateWorld(const Direction& movementDirection)
 {
-	player->move(left);
-	player->move(left);
-	player->move(right);
+	player->move(movementDirection);
+	for (auto robot : robots)
+	{
+		if (robot->isAI())
+		{
+			robot->move(static_cast<Direction>(generateRandomNumber(gen, 0,4)));
+		}
+	}
 }
 
 void World::renderWorld()
@@ -60,8 +78,12 @@ void World::renderWorld()
 		for (int x = 0; x < WorldDimensions::dimX; x++)
 		{
 			// draw to the screen
+
+			std::cout << convertBlockToChar(worldGrid[x][y][DefaultValues::startingHeight].getBlockType()) << " ";
 		}
 		std::cout << std::endl;
 	}
 	std::cout << std::endl;
 }
+
+

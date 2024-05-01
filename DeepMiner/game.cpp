@@ -39,27 +39,27 @@ void Game::handleInput()
 		{
 		case 'W':
 		case 'w':
-			movementDirection = Direction::forward;
+			playerMovementDir = Direction::forward;
 			inputValidated = true;
 			break;
 		case 'A':
 		case 'a':
-			movementDirection = Direction::left;
+			playerMovementDir = Direction::left;
 			inputValidated = true;
 			break;
 		case 'S':
 		case 's':
-			movementDirection = Direction::down;
+			playerMovementDir = Direction::backward;
 			inputValidated = true;
 			break;
 		case 'D':
 		case 'd':
-			movementDirection = Direction::right;
+			playerMovementDir = Direction::right;
 			inputValidated = true;
 			break;
 		case 'I':
 		case 'i':
-			movementDirection = Direction::idle;
+			playerMovementDir = Direction::idle;
 			inputValidated = true;
 			break;
 		default:
@@ -72,7 +72,7 @@ void Game::handleInput()
 
 void Game::update()
 {
-	world->updateWorld(movementDirection);
+	world->updateWorld(playerMovementDir);
 }
 
 void Game::render()
