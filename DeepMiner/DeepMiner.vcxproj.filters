@@ -65,5 +65,8 @@
     <ClInclude Include="block.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="voidifier.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

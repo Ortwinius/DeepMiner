@@ -24,6 +24,12 @@ public:
 		y += other.y;
 		z += other.z;
 	}
+	// Pos1 + Pos2
+	const Vec3 operator + (const Vec3& other) const
+	{
+		return Vec3(x + other.x, y + other.y, z + other.z);
+	}
+
 	// -(Pos1) = -pos.x, -pos.y
 	const Vec3 operator - () const
 	{
@@ -38,6 +44,11 @@ public:
 	const bool operator == (const Vec3& other) const
 	{
 		return x == other.x && y == other.y && z == other.z;
+	}
+
+	const bool operator != (const Vec3& other) const
+	{
+		return x != other.x && y != other.y && z != other.z;
 	}
 
 	int x;

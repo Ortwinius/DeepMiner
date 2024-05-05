@@ -29,6 +29,7 @@ namespace WorldDimensions
 namespace DefaultValues
 {
 	constexpr int startingHeight = 9;
+	constexpr int aiRobotCount = 2;
 }
 
 namespace BlockTypeProbs

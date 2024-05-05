@@ -17,6 +17,7 @@ void Game::initGame()
 {
 	running = true;
 	world = new World();
+	world->renderWorld(); 	// render first frame
 }
 
 void Game::handleInput()
@@ -26,7 +27,7 @@ void Game::handleInput()
 	std::cout << "[A] - Backward" << std::endl;
 	std::cout << "[S] - Down" << std::endl;
 	std::cout << "[D] - Right" << std::endl;
-	std::cout << "[I] - Idle" << std::endl;
+	std::cout << "[I] - Idle" << std::endl << std::endl;
 
 	char input;
 	bool inputValidated = false;
@@ -60,6 +61,11 @@ void Game::handleInput()
 		case 'I':
 		case 'i':
 			playerMovementDir = Direction::idle;
+			inputValidated = true;
+			break;
+		case 'Q':
+		case 'q':
+			running = false;
 			inputValidated = true;
 			break;
 		default:

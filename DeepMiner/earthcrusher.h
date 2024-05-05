@@ -5,17 +5,19 @@
 class EarthCrusher : public Robot
 {
 public:
-	EarthCrusher() = default;
+	EarthCrusher(bool isAI) : Robot(isAI) {}
 	~EarthCrusher() = default;
 
-	void move(const Direction& toMove) override
-	{
-
-	}
+	//void move(const Direction& toMove) override
+	//{
+	//	std::cout << "Moving from (" << pos.x << "," << pos.y << "," << pos.z << ") to:" << std::endl;
+	//	this->pos += getDirectionVec(toMove);
+	//	std::cout << "(" << pos.x << ", " << pos.y << ", " << pos.z << ")" << std::endl;
+	//}
 
 	void mine() override
 	{
-		std::cout << std::endl << "Starsweeper mines blocks" << std::endl;
+		std::cout << std::endl << "EarthCrusher mines blocks" << std::endl;
 		// TODO
 	}
 
