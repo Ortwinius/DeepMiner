@@ -98,10 +98,23 @@ void World::initWorld()
 
 void World::updateWorld(const Direction& movementDirection)
 {
-
 	player->move(movementDirection);
+
+	// get copy of player column
+	std::vector<Block> playerColumn = getColumn(player->getPosition());
+
+	player->updateRobotHeight(playerColumn);
+	std::cout << "Player height lvl: " << player->getPosition().z << std::endl;
+
 	printRobotColumnValues(player->getPosition());
-	player->mine();
+
+	// pass it to mine function by reference and change it
+	player->mine(playerColumn);
+
+	// update world grid to new column
+	setColumn(playerColumn, player->getPosition());
+
+	printRobotColumnValues(player->getPosition());
 
 	// for AI robots -> randomized movement behaviour
 	for (auto robot : robots)
@@ -109,7 +122,7 @@ void World::updateWorld(const Direction& movementDirection)
 		if (robot->isAI())
 		{
 			robot->move(static_cast<Direction>(generateRandomNumber(gen, 0,4)));
-			robot->mine();
+			//robot->mine(worldGrid);
 		}
 	}
 }
@@ -121,21 +134,26 @@ void World::renderWorld()
 	{
 		for (int x = 0; x < WorldDimensions::dimX; x++)
 		{
-			// calculate highest z-value not equal to air 
-			int columnHeight = getColumnHeight(x,y) - 1;
+			// calculate highest z-value not equal to air (subtract one for index)
+			int columnHeight = getColumnHeight(x, y);
+			if (columnHeight > 0)
+			{
+				columnHeight--;
+			}
+
 			Vec3 currentPos = Vec3(x, y, columnHeight);
 			bool isRobot = false;
 
 			// if there is a robot on the highest field -> draw it, else draw the block
-			for (const auto& robot : robots)
-			{
-				if (robot->getPosition() == currentPos)
-				{
-					std::cout << "R ";
-					isRobot = true;
-					break;
-				}
-			}
+			//for (const auto& robot : robots)
+			//{
+			//	if (robot->getPosition().x == currentPos.x && robot->getPosition().y == currentPos.y)
+			//	{
+			//		std::cout << "R ";
+			//		isRobot = true;
+			//		break;
+			//	}
+			//}
 			// else print the highest z-value
 			if (!isRobot)
 			{
@@ -158,17 +176,41 @@ int World::getColumnHeight(int x, int y)
 	return h;
 }
 
+// set world grid column at pos XY to values of newColumn
+void World::setColumn(const std::vector<Block>& newColumn, const Vec3& pos)
+{
+	int z = 0;
+
+	while (z < WorldDimensions::dimZ)
+	{
+		worldGrid[pos.x][pos.y][z] = newColumn[z];
+		z++;
+	}
+}
+
+// returns reference on worldGrid column
+std::vector<Block> World::getColumn(const Vec3& pos)
+{
+	std::vector<Block> col = {};
+	int z = 0;
+
+	while (z < WorldDimensions::dimZ)
+	{
+		col.push_back(worldGrid[pos.x][pos.y][z]);
+		z++;
+	}
+
+	return col;
+}
+
 void World::printRobotColumnValues(const Vec3& robotColumn)
 {
-	int x = robotColumn.x;
-	int y = robotColumn.y;
-
-	std::cout << "Column [" << x << "] [" << y << "] Z values: " << std::endl;
+	std::cout << "Column [" << robotColumn.x << "] [" << robotColumn.y << "] Z values: " << std::endl;
 
 	// descending order
-	for (int z = WorldDimensions::dimZ - 1; z << WorldDimensions::dimZ >= 0; z--)
+	for (int z = WorldDimensions::dimZ - 1; z >= 0; z--)
 	{
-		std::cout << "Z [" << z << "]: " << convertBlockToChar(worldGrid[x][y][z].getBlockType()) << std::endl;
+		std::cout << "Z [" << z << "]: " << convertBlockToChar(worldGrid[robotColumn.x][robotColumn.y][z].getBlockType()) << std::endl;
 	}
 }
 

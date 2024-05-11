@@ -27,9 +27,10 @@ public:
 
 	virtual void move(const Direction& toMove);
 
-	virtual void mine() = 0;
+	virtual void mine(std::vector<Block>& robotColumn) = 0;
 	
 	const bool isValidPosition(const Vec3& pos);
+	void updateRobotHeight(std::vector<Block>& robotColumn);
 	Vec3 getDirectionVec(const Direction& toMove);
 
 	const int getScore() const { return score; }

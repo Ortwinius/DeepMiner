@@ -8,7 +8,7 @@
 
 const BlockType& Block::createRandomBlockType(std::mt19937& gen)
 {
-	BlockType type;
+	BlockType type = BlockType::air;
 
 	double rand = static_cast<double>(generateRandomNumber(gen, 0, 100)) / 100;
 

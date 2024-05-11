@@ -4,10 +4,11 @@ void Robot::move(const Direction& toMove)
 {
 	Vec3 delta = getDirectionVec(toMove);
 	Vec3 newPos = this->pos + delta;
+
 	if (isValidPosition(newPos))
 	{
 		std::cout << "Moving from (" << pos.x << "," << pos.y << "," << pos.z << ") to:" << std::endl;
-		this->pos += getDirectionVec(toMove);
+		this->pos = newPos;
 		std::cout << "(" << pos.x << ", " << pos.y << ", " << pos.z << ")" << std::endl;
 	}
 	else
@@ -40,6 +41,7 @@ Vec3 Robot::getDirectionVec(const Direction& toMove)
 
 }
 
+// TODO: also check if there is no robot on the field?
 const bool Robot::isValidPosition(const Vec3& pos)
 {
 	return (pos.x >= 0 && pos.x < WorldDimensions::dimX
@@ -47,4 +49,19 @@ const bool Robot::isValidPosition(const Vec3& pos)
 		&& pos.z >= 0 && pos.z < WorldDimensions::dimZ);
 }
 
+void Robot::updateRobotHeight(std::vector<Block>& robotColumn)
+{
+	int newHeight = 0;
+
+	for (int z = WorldDimensions::dimZ - 1; z >= 0; z--)
+	{
+		if (robotColumn[z].getBlockType() != BlockType::air)
+		{
+			newHeight = z;
+			break;
+		}
+	}
+
+	this->pos.z = newHeight;
+}
 

@@ -25,3 +25,23 @@ const char convertBlockToChar(const BlockType& blockType)
 	}
 }
 
+int convertBlockTypeToScoreValue(const BlockType& blockType)
+{
+	switch (blockType)
+	{
+	case air:
+		return 0;
+	case stone:
+		return BlockTypeScoreValue::stoneV;
+	case iron:
+		return BlockTypeScoreValue::ironV;
+	case gold:
+		return BlockTypeScoreValue::goldV;
+	case vibranium:
+		return BlockTypeScoreValue::vibraniumV;
+	default:
+		return 0;
+	}
+
+}
+

@@ -11,16 +11,17 @@ public:
 	StarSweeper(bool isAI) : Robot(isAI) {}
 	~StarSweeper() = default;
 
-	//void move(const Direction& toMove) override
-	//{
-
-	//}
-
-	void mine() override
-	{
-		std::cout << std::endl << "Starsweeper mines blocks" << std::endl;
-		// world grid -> column take highest value and two below. 
+	void mine(std::vector<Block>& robotColumn) override
+	{	
+		// world grid -> column take highest value (z value of robot) and two below. 
 		// read the values and add them depending on rareness
 
+		std::cout << std::endl << "Starsweeper mines blocks" << std::endl;
+
+		for (int z = this->pos.z, i = 0; z >= 0 && i < 3; z--, i++)
+		{
+			this->score += convertBlockTypeToScoreValue(robotColumn[z].getBlockType());
+			robotColumn[z].setBlockType(BlockType::air);
+		}
 	}
 };

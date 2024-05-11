@@ -18,7 +18,15 @@ public:
 	{}
 
 	const BlockType& getBlockType() { return blockType; }
-	void setBlockType(const BlockType& type) { blockType = type; }
+	void setBlockType(const BlockType& type) { blockType = type; }	
+
+	bool operator > (const Block& other) const {
+		return blockType > other.blockType;
+	}
+
+	bool operator < (const Block& other) const {
+		return blockType < other.blockType;
+	}
 
 private:
 

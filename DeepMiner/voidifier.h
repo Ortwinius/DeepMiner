@@ -8,14 +8,7 @@ public:
 	Voidifier(bool isAI) : Robot(isAI) {}
 	~Voidifier() = default;
 
-	//void move(const Direction& toMove) override
-	//{
-	//	std::cout << "Moving from (" << pos.x << "," << pos.y << "," << pos.z << ") to:";
-	//	this->pos += getDirectionVec(toMove);
-	//	std::cout << "(" << pos.x << ", " << pos.y << ", " << pos.z << ")" << std::endl;
-	//}
-
-	void mine() override
+	void mine(std::vector<Block>& robotColumn) override
 	{
 		std::cout << std::endl << "Voidifier mines blocks" << std::endl;
 		// TODO

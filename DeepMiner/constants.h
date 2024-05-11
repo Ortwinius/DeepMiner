@@ -39,3 +39,11 @@ namespace BlockTypeProbs
 	constexpr double goldP = 0.15;
 	constexpr double vibraniumP = 0.05;
 }
+
+namespace BlockTypeScoreValue
+{
+	constexpr int stoneV = 1;
+	constexpr int ironV = 2;
+	constexpr int goldV = 4;
+	constexpr int vibraniumV = 8;
+}
