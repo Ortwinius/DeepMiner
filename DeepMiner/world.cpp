@@ -8,22 +8,21 @@ World::World(int robotCount)
 	initWorld(robotCount);
 }
 
-World::~World()
-{}
+World::~World() = default;
 
 void World::initWorld(int robotCount)
 {	
 	// clear and init worldgrid vector to 5*5*10
 	world.clear();
-	world.resize(WorldDimensions::dimX, std::vector<std::vector<Block>>
-		(WorldDimensions::dimY, std::vector<Block>(WorldDimensions::dimZ)));
+	world.resize(dimX, std::vector<std::vector<Block>>
+		(dimY, std::vector<Block>(dimZ)));
 
 	// create random blocks with gen-randomizer 
-	for (int z = 0; z < WorldDimensions::dimZ; z++)
+	for (int z = 0; z < dimZ; z++)
 	{
-		for (int y = 0; y < WorldDimensions::dimY; y++)
+		for (int y = 0; y < dimY; y++)
 		{
-			for (int x = 0; x < WorldDimensions::dimX; x++)
+			for (int x = 0; x < dimX; x++)
 			{
 				world[x][y][z] = Block(gen);
 			}
@@ -59,76 +58,35 @@ void World::initWorld(int robotCount)
 	}
 }
 
-void World::updateWorld()
+void World::runThreads()
 {
-	// AI robots -> randomized movement behaviour
+	// reserve space for all robots
+	robotThreads.reserve(robots.size());
+
+	// run robots in parallel
 	for (auto& robot : robots)
 	{
-		if (robot->isAlive())
-		{
-			robot->move(world, gen);
-			robot->mine(getColumn(robot->getPosition()));
-
-			// update column with new values
-			Vec3 robotPos = robot->getPosition();
-			setColumn(getColumn(robotPos), robotPos);
-		}
-		else
-		{
-			// remove dead robots
-			robots.erase(std::remove(robots.begin(), robots.end(), robot), robots.end());
-		}
+		robotThreads.push_back(std::thread(&World::runRobot, this, std::ref(robot)));
 	}
-	checkWorldEmpty();
+
+	for (auto& thread : robotThreads) {
+		thread.join();
+	}
 }
 
-void World::renderWorld()
+void World::runRobot(std::unique_ptr<Robot>& robot)
 {
-	std::cout << std::endl;
-	for (int y = 0; y < WorldDimensions::dimY; y++)
+	while (robot->isAlive() && !checkWorldEmpty())
 	{
-		for (int x = 0; x < WorldDimensions::dimX; x++)
-		{
-			// calculate highest z-value not equal to air (subtract one for index)
-			int columnHeight = getColumnHeight(x, y);
-			if (columnHeight > 0)
-			{
-				columnHeight--;
-			}
+		robot->move(world, gen);
+		// lock the column mutex before updating it so that no other robot can access it
+		std::lock_guard<std::mutex> lock(columnMutexes[robot->getPos().x][robot->getPos().y]);
 
-			Vec3 currentPos = Vec3(x, y, columnHeight);
-			bool isRobot = false;
+		robot->mine(getColumn(robot->getPos()));
 
-			// if there is a robot on the highest field -> draw it, else draw the block
-			for (const auto& robot : robots)
-			{
-				if (robot->getPosition().x == currentPos.x && robot->getPosition().y == currentPos.y)
-				{
-					std::cout << "Ü ";
-					isRobot = true;
-					break;
-				}
-			}
-			// else print the highest z-value
-			if (!isRobot)
-			{
-				std::cout << convertBlockToChar(world[x][y][columnHeight].getBlockType()) << " ";
-			}
-		}
-		std::cout << std::endl;
+		// update column with new values
+		setColumn(getColumn(robot->getPos()), robot->getPos());
 	}
-	std::cout << std::endl;
-}
-
-int World::getColumnHeight(int x, int y)
-{
-	int h = 0;
-	for (int z = 0; z < WorldDimensions::dimZ; z++)
-	{
-		if (world[x][y][z].getBlockType() != BlockType::air)
-			h++;
-	}
-	return h;
 }
 
 // getter for world grid column
@@ -143,11 +101,22 @@ void World::setColumn(const std::vector<Block>& newColumn, const Vec3& pos)
 {
 	int z = 0;
 
-	while (z < WorldDimensions::dimZ)
+	while (z < dimZ)
 	{
 		world[pos.x][pos.y][z] = newColumn[z];
 		z++;
 	}
+}
+
+int World::getColumnHeight(int x, int y)
+{
+	int h = 0;
+	for (int z = 0; z < dimZ; z++)
+	{
+		if (world[x][y][z].getBlockType() != BlockType::air)
+			h++;
+	}
+	return h;
 }
 
 void World::printRobotColumnValues(const Vec3& robotColumn)
@@ -155,7 +124,7 @@ void World::printRobotColumnValues(const Vec3& robotColumn)
 	std::cout << "Column [" << robotColumn.x << "] [" << robotColumn.y << "] Z values: " << std::endl;
 
 	// descending order
-	for (int z = WorldDimensions::dimZ - 1; z >= 0; z--)
+	for (int z = dimZ - 1; z >= 0; z--)
 	{
 		std::cout << "Z [" << z << "]: " << convertBlockToChar(world[robotColumn.x][robotColumn.y][z].getBlockType()) << std::endl;
 	}
@@ -164,11 +133,11 @@ void World::printRobotColumnValues(const Vec3& robotColumn)
 const bool World::checkWorldEmpty()
 {
 	// check if the whole world grid is air
-	for(int z = 0; z < WorldDimensions::dimZ; z++)
+	for(int z = 0; z < dimZ; z++)
 	{
-		for(int y = 0; y < WorldDimensions::dimY; y++)
+		for(int y = 0; y < dimY; y++)
 		{
-			for(int x = 0; x < WorldDimensions::dimX; x++)
+			for(int x = 0; x < dimX; x++)
 			{
 				if(world[x][y][z].getBlockType() != BlockType::air)
 				{
@@ -183,11 +152,11 @@ const bool World::checkWorldEmpty()
 int World::getTotalMinableScore()
 {
 	int score = 0;
-	for (int z = 0; z < WorldDimensions::dimZ; z++)
+	for (int z = 0; z < dimZ; z++)
 	{
-		for (int y = 0; y < WorldDimensions::dimY; y++)
+		for (int y = 0; y < dimY; y++)
 		{
-			for (int x = 0; x < WorldDimensions::dimX; x++)
+			for (int x = 0; x < dimX; x++)
 			{
 				score += convertBlockTypeToScoreValue(world[x][y][z].getBlockType());
 			}
@@ -207,4 +176,41 @@ int World::getTotalRobotScore()
 	return score;
 }
 
+void World::renderWorld()
+{
+	std::cout << std::endl;
+	for (int y = 0; y < dimY; y++)
+	{
+		for (int x = 0; x < dimX; x++)
+		{
+			// calculate highest z-value not equal to air (subtract one for index)
+			int columnHeight = getColumnHeight(x, y);
+			if (columnHeight > 0)
+			{
+				columnHeight--;
+			}
+
+			Vec3 currentPos = Vec3(x, y, columnHeight);
+			bool isRobot = false;
+
+			// if there is a robot on the highest field -> draw it, else draw the block
+			for (const auto& robot : robots)
+			{
+				if (robot->getPos().x == currentPos.x && robot->getPos().y == currentPos.y)
+				{
+					std::cout << "Ü ";
+					isRobot = true;
+					break;
+				}
+			}
+			// else print the highest z-value
+			if (!isRobot)
+			{
+				std::cout << convertBlockToChar(world[x][y][columnHeight].getBlockType()) << " ";
+			}
+		}
+		std::cout << std::endl;
+	}
+	std::cout << std::endl;
+}
 

@@ -5,8 +5,7 @@ Game::Game()
 	initGame();
 }
 
-Game::~Game()
-{}
+Game::~Game() = default;
 
 int Game::validateRobotCount()
 {
@@ -19,7 +18,7 @@ int Game::validateRobotCount()
 		|| robotCount < DefaultValues::minRobotCount
 			|| robotCount > DefaultValues::maxRobotCount)
 	{
-		std::cout << "Please enter a valid number between " << DefaultValues::minRobotCount << "and " << DefaultValues::maxRobotCount << std::endl;
+		std::cout << "Please enter a valid number between " << DefaultValues::minRobotCount << " and " << DefaultValues::maxRobotCount << std::endl;
 		std::cin.clear();
 		std::cin.ignore(128, '\n');
 		std::cin >> robotCount;
@@ -39,30 +38,14 @@ void Game::run()
 {
 	showTotalMinableScore(world->getTotalMinableScore());
 
-	// main game loop without handleInput and render because of automated flow
-	while (isRunning)
-	{
-		update();
-	}
+	// main game loop without handleInput and render because of automated parallelized flow
+	auto startTime = Timer::now();
+	world->runThreads();
+	auto endTime = Timer::now();
 
 	// show final score
-	// showRobotScores(world->getRobots());
 	showTotalRobotScore(world->getTotalRobotScore());
-}
-
-void Game::update()
-{
-	world->updateWorld();
-	if(world->checkWorldEmpty())
-	{
-		isRunning = false;
-	}
-
-}
-
-void Game::render()
-{
-	world->renderWorld();
+	showTotalExecutionTime(startTime, endTime);
 }
 
 void Game::showRobotScores(const std::vector<std::unique_ptr<Robot>>& robots)
@@ -84,3 +67,15 @@ void Game::showTotalMinableScore(int score)
 {
 	std::cout << "Total sum of minable score points: " << score << std::endl;
 }
+
+void Game::showTotalExecutionTime(std::chrono::time_point<std::chrono::high_resolution_clock> startTime, std::chrono::time_point<std::chrono::high_resolution_clock> endTime)
+{
+	std::chrono::duration<float> fs = endTime - startTime;
+	auto d = std::chrono::duration_cast<std::chrono::milliseconds>(fs);
+	std::cout << "Total execution time: " << fs.count() << " s" << std::endl;
+}
+
+//void Game::render()
+//{
+//	world->renderWorld();
+//}

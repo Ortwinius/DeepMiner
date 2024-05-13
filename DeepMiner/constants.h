@@ -29,7 +29,7 @@ namespace WorldDimensions
 namespace DefaultValues
 {
 	constexpr int startingHeight = 9;
-	constexpr int minRobotCount = 1; //TODO to be updated to 5 later
+	constexpr int minRobotCount = 1; 
 	constexpr int maxRobotCount = 100;
 	constexpr int robotClassCount = 3;
 }

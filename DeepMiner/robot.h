@@ -4,25 +4,23 @@
 #include <random>
 #include "common.h"
 
-typedef std::mt19937 RandGen;
-typedef std::vector<std::vector<std::vector<Block>>> WorldGrid;
-
 class Robot
 {
 public:
-	explicit Robot(); 
-	                             
+	typedef std::mt19937 RandGen;
+	typedef std::vector<std::vector<std::vector<Block>>> WorldGrid;
+
+	explicit Robot();                 
 	virtual ~Robot() = default;
 
 	virtual void initRobot();
-
 	virtual void move(WorldGrid& world, RandGen& gen);
 
 	virtual void mine(std::vector<Block>& robotColumn) = 0;
 	
 	const int getScore() const { return score; }
 	const Direction& getDirection() const { return dir; }
-	const Vec3& getPosition() const { return pos; }
+	const Vec3& getPos() const { return pos; }
 	const bool isAlive() const { return alive; }
 
 	const bool isValidPosition(const Vec3& pos);
