@@ -1,21 +1,32 @@
 #include "robot.h"
 
-void Robot::move(RandGen& gen)
+Robot::Robot()
 {
+	score = 0;
+	dir = idle;
+	pos = Vec3(0, 0, 0);
+	alive = true;
+	initRobot();
+}
+
+void Robot::initRobot()
+{
+	pos = Vec3(rand() % WorldDimensions::dimX, rand() % WorldDimensions::dimY, DefaultValues::startingHeight);
+}
+
+void Robot::move(WorldGrid& world, RandGen& gen)
+{
+	// generate random direction
 	Direction toMove = static_cast<Direction>(generateRandomNumber(gen, 0, 4));
 	Vec3 delta = getDirectionVec(toMove);
 	Vec3 newPos = this->pos + delta;
 
 	if (isValidPosition(newPos))
 	{
-		//std::cout << "Moving from (" << pos.x << "," << pos.y << "," << pos.z << ") to:" << std::endl;
 		this->pos = newPos;
-		//std::cout << "(" << pos.x << ", " << pos.y << ", " << pos.z << ")" << std::endl;
 	}
-	else
-	{
-		//std::cout << "Can't move here! Staying idle" << std::endl;
-	}
+
+	updateRobotHeight(world[pos.x][pos.y]);
 }
 
 Vec3 Robot::getDirectionVec(const Direction& toMove)
@@ -42,7 +53,6 @@ Vec3 Robot::getDirectionVec(const Direction& toMove)
 
 }
 
-// TODO: also check if there is no robot on the field?
 const bool Robot::isValidPosition(const Vec3& pos)
 {
 	return (pos.x >= 0 && pos.x < WorldDimensions::dimX

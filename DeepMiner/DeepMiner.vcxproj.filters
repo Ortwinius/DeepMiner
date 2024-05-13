@@ -33,6 +33,15 @@
     <ClCompile Include="block.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="earthcrusher.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="starsweeper.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="voidifier.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h">

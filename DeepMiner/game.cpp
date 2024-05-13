@@ -39,13 +39,14 @@ void Game::run()
 {
 	showTotalMinableScore(world->getTotalMinableScore());
 
+	// main game loop without handleInput and render because of automated flow
 	while (isRunning)
 	{
 		update();
 	}
 
 	// show final score
-	//showRobotScores(world->getRobots());
+	// showRobotScores(world->getRobots());
 	showTotalRobotScore(world->getTotalRobotScore());
 }
 

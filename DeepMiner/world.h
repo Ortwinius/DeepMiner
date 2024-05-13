@@ -31,13 +31,13 @@ public:
 	int getTotalRobotScore();
 
 private:
-	WorldGrid worldGrid; 
+	WorldGrid world; 
 	std::vector<std::unique_ptr<Robot>> robots;
+	std::random_device rd;
+	RandGen gen;
 
-	int getColumnHeight(int x, int y);
-	std::vector<Block> getColumn(const Vec3& pos);
+	std::vector<Block>& getColumn(const Vec3& pos);
 	void setColumn(const std::vector<Block>& newColumn, const Vec3& pos);
+	int getColumnHeight(int x, int y);
 	void printRobotColumnValues(const Vec3& robotColumn);
-	std::random_device rd; 
-	RandGen gen; 
 };

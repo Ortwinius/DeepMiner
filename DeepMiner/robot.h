@@ -5,43 +5,33 @@
 #include "common.h"
 
 typedef std::mt19937 RandGen;
+typedef std::vector<std::vector<std::vector<Block>>> WorldGrid;
 
 class Robot
 {
 public:
-	Robot(bool isAI)
-	{
-		score = 0;
-		dir = idle;
-		pos = Vec3(0, 0, 0);
-		ai = false;
-		initRobot();
-	}
+	explicit Robot(); 
 	                             
 	virtual ~Robot() = default;
 
-	virtual void initRobot()
-	{
-		pos = Vec3(rand() % WorldDimensions::dimX, rand() % WorldDimensions::dimY, DefaultValues::startingHeight);
-		//std::cout << "Initialized bot at pos (" << pos.x << ", " << pos.y << ", " << pos.z << ")" << std::endl;
-	}
+	virtual void initRobot();
 
-	virtual void move(RandGen& gen);
+	virtual void move(WorldGrid& world, RandGen& gen);
 
 	virtual void mine(std::vector<Block>& robotColumn) = 0;
 	
-	const bool isValidPosition(const Vec3& pos);
-	void updateRobotHeight(std::vector<Block>& robotColumn);
-	Vec3 getDirectionVec(const Direction& toMove);
-
 	const int getScore() const { return score; }
 	const Direction& getDirection() const { return dir; }
 	const Vec3& getPosition() const { return pos; }
-	const bool isAI() const { return ai; }
+	const bool isAlive() const { return alive; }
+
+	const bool isValidPosition(const Vec3& pos);
+	void updateRobotHeight(std::vector<Block>& robotColumn);
+	Vec3 getDirectionVec(const Direction& toMove);
 
 protected:
 	int score;
 	Direction dir;
 	Vec3 pos;
-	bool ai;
+	bool alive;
 };
