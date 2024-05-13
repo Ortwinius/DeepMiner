@@ -29,7 +29,8 @@ namespace WorldDimensions
 namespace DefaultValues
 {
 	constexpr int startingHeight = 9;
-	constexpr int aiRobotCount = 2;
+	constexpr int minRobotCount = 1; //TODO to be updated to 5 later
+	constexpr int maxRobotCount = 10;
 }
 
 namespace BlockTypeProbs
@@ -46,4 +47,9 @@ namespace BlockTypeScoreValue
 	constexpr int ironV = 2;
 	constexpr int goldV = 4;
 	constexpr int vibraniumV = 8;
+}
+
+namespace ClassMultipliers
+{
+	constexpr int EarthCrusherM = 2; // every block Earthcrusher mines is worth 2.25 as much
 }

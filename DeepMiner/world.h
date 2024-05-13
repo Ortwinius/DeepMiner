@@ -3,6 +3,7 @@
 #include <iostream>
 #include <vector>
 #include <random>
+#include <memory>
 #include "common.h"
 #include "robot.h"
 #include "starsweeper.h"
@@ -19,15 +20,15 @@ public:
 	~World();
 
 	void initWorld();
-	void updateWorld(const Direction& movementDirection);
+	void updateWorld();
 	void renderWorld();
 
-	const Robot* getPlayerRef() const { return player; }
+	const std::vector<std::unique_ptr<Robot>>& getRobots() const { return robots; }
+	const bool checkWorldEmpty();
 
 private:
-	Robot* player;
-	std::vector<Robot*> robots;
-	WorldGrid worldGrid; // TODO : throw on the heap?
+	WorldGrid worldGrid; 
+	std::vector<std::unique_ptr<Robot>> robots;
 
 	int getColumnHeight(int x, int y);
 	std::vector<Block> getColumn(const Vec3& pos);
@@ -35,4 +36,6 @@ private:
 	void printRobotColumnValues(const Vec3& robotColumn);
 	std::random_device rd; 
 	std::mt19937 gen; 
+
+	static int iterationCounter;
 };

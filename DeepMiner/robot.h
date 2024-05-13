@@ -20,7 +20,6 @@ public:
 
 	virtual void initRobot()
 	{
-		// check for collision with other robot?
 		pos = Vec3(rand() % WorldDimensions::dimX, rand() % WorldDimensions::dimY, DefaultValues::startingHeight);
 		std::cout << "Initialized bot at pos (" << pos.x << ", " << pos.y << ", " << pos.z << ")" << std::endl;
 	}

@@ -29,6 +29,6 @@ const BlockType& Block::createRandomBlockType(std::mt19937& gen)
 		type = BlockType::vibranium;
 	}
 
-	std::cout << "Created block of type " << type << std::endl;
+	//std::cout << "Created block of type " << type << std::endl;
 	return type;
 }

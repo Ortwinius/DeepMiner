@@ -6,25 +6,6 @@ int generateRandomNumber(std::mt19937& gen, int min, int max)
 	return distribution(gen);
 }
 
-const char convertBlockToChar(const BlockType& blockType)
-{
-	switch (blockType)
-	{
-	case air:
-		return ' ';
-	case stone:
-		return '#';
-	case iron:
-		return 'I';
-	case gold:
-		return 'G';
-	case vibranium:
-		return 'V';
-	default:
-		return ' ';
-	}
-}
-
 int convertBlockTypeToScoreValue(const BlockType& blockType)
 {
 	switch (blockType)
@@ -44,4 +25,44 @@ int convertBlockTypeToScoreValue(const BlockType& blockType)
 	}
 
 }
+
+const char convertBlockToChar(const BlockType& blockType)
+{
+	switch (blockType)
+	{
+	case air:
+		return ' ';
+	case stone:
+		return '#';
+	case iron:
+		return 'I';
+	case gold:
+		return 'G';
+	case vibranium:
+		return 'V';
+	default:
+		return ' ';
+	}
+}
+
+const std::string convertBlockTypeToString(const BlockType& blockType)
+{
+	switch (blockType)
+	{
+	case air:
+		return "Air";
+	case stone:
+		return "Stone";
+	case iron:
+		return "Iron";
+	case gold:
+		return "Gold";
+	case vibranium:
+		return "Vibranium";
+	default:
+		return "Air";
+	}
+}
+
+
 

@@ -1,19 +1,24 @@
 #pragma once
+#include <memory>
 #include "world.h"
 #include "constants.h"
+#include "robot.h"
 
 class Game
 {
 public:
 	Game();
 	~Game();
-	void handleInput();
+
+	void run();
 	void update();
 	void render();
-	const bool isRunning() { return running; }
 private:
-	void initGame();
-	bool running = false;
-	World* world;
+	bool isRunning = false;
+	std::unique_ptr<World> world;
 	Direction playerMovementDir;
+
+	void initGame();
+	void showRobotScores(const std::vector<std::unique_ptr<Robot>>& robots);
+
 };

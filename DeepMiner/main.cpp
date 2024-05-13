@@ -5,13 +5,7 @@ int main()
 {
     // init game
     Game game;
-
-    while (game.isRunning())
-    {
-        game.handleInput();
-        game.update();
-        game.render();
-    }
+    game.run();
 
     return 0;
 }

@@ -6,82 +6,48 @@ Game::Game()
 }
 
 Game::~Game()
-{
-	if (world != nullptr)
-	{
-		delete world;
-	}
-}
+{}
 
 void Game::initGame()
 {
-	running = true;
-	world = new World();
+	isRunning = true;
+	world = std::make_unique<World>();
 	world->renderWorld(); 	// render first frame
 }
 
-void Game::handleInput()
+void Game::showRobotScores(const std::vector<std::unique_ptr<Robot>>& robots)
 {
-	// show movement options
-	std::cout << "[W] - Forward" << std::endl;
-	std::cout << "[A] - Backward" << std::endl;
-	std::cout << "[S] - Down" << std::endl;
-	std::cout << "[D] - Right" << std::endl;
-	std::cout << "[I] - Idle" << std::endl << std::endl;
-
-	char input;
-	bool inputValidated = false;
-
-	while (!inputValidated)
+	int i = 1;
+	for(auto &robot : robots)
 	{
-		std::cin >> input;
-
-		switch (input)
-		{
-		case 'W':
-		case 'w':
-			playerMovementDir = Direction::forward;
-			inputValidated = true;
-			break;
-		case 'A':
-		case 'a':
-			playerMovementDir = Direction::left;
-			inputValidated = true;
-			break;
-		case 'S':
-		case 's':
-			playerMovementDir = Direction::backward;
-			inputValidated = true;
-			break;
-		case 'D':
-		case 'd':
-			playerMovementDir = Direction::right;
-			inputValidated = true;
-			break;
-		case 'I':
-		case 'i':
-			playerMovementDir = Direction::idle;
-			inputValidated = true;
-			break;
-		case 'Q':
-		case 'q':
-			running = false;
-			inputValidated = true;
-			break;
-		default:
-			std::cout << "Error: Input not valid" << std::endl;
-			break;
-		}
+		std::cout << "Robot " << i << " score: " << robot->getScore() << std::endl;
+		i++;
 	}
 }
 
+void Game::run()
+{
+	while (isRunning)
+	{
+		update();
+		render();
+	}
+	// show final score
+	showRobotScores(world->getRobots());
+}
 
 void Game::update()
 {
-	world->updateWorld(playerMovementDir);
+	world->updateWorld();
+	if(world->checkWorldEmpty())
+	{
+		isRunning = false;
+	}
+
 }
 
 void Game::render()
 {
+	//showRobotScores(world->getRobots());
 	world->renderWorld();
 }

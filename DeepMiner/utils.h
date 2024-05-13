@@ -9,3 +9,5 @@ const char convertBlockToChar(const BlockType& blockType);
 
 int convertBlockTypeToScoreValue(const BlockType& blockType);
 
+const std::string convertBlockTypeToString(const BlockType& blockType);
+

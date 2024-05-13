@@ -8,13 +8,10 @@ World::World()
 	initWorld();
 }
 
+int World::iterationCounter = 0;
+
 World::~World()
-{
-	for (auto robot : robots)
-	{
-		delete robot;
-	}
-}
+{}
 
 void World::initWorld()
 {	
@@ -35,96 +32,96 @@ void World::initWorld()
 		}
 	}
 
-	// get and set player class
-	bool playerValidated = false;
-	while (!playerValidated)
-	{
-		char robotChoice;
-		std::cout << "Choose your robot type: " <<
-			std::endl << "1 - StarSweeper" <<
-			std::endl << "2 - EarthCrusher" <<
-			std::endl << "3 - Voidifier" << std::endl;
+	// ask user for how many robots to spawn and then validate input for x robots
+	int robotCount = 0;
+	std::cout << "How many robots do you want to spawn? (1 - 6)" << std::endl;
+	std::cin >> robotCount;
 
-		std::cin >> robotChoice;
-		switch (robotChoice)
-		{
-		case '1':
-			std::cout << "Player chooses StarSweeper class" << std::endl;
-			player = new StarSweeper(false);
-			playerValidated = true;
-			break;
-		case '2':
-			std::cout << "Player chooses EarthCrusher class" << std::endl;
-			player = new EarthCrusher(false);
-			playerValidated = true;
-			break;
-		case '3':
-			std::cout << "Player chooses Voidifier class" << std::endl;
-			player = new Voidifier(false);
-			playerValidated = true;
-			break;
-		default:
-			std::cout << "Please choose a valid robot type" << std::endl;
-			break;
-		}
+	while (std::cin.fail() || robotCount < 0 || robotCount > 6)
+	{
+		std::cout << "Please enter a valid number between 1 and 6" << std::endl;
+		std::cin.clear();
+		std::cin.ignore(128, '\n');
+		std::cin >> robotCount;
 	}
 
-	// add player to entity vector
-	robots.push_back(player);
-
-	/*for (int i = 0; i < DefaultValues::aiRobotCount; i++)
+	// create robots and add them to robots vector
+	
+	for(int i = 0; i < robotCount; i++)
 	{
-		int robotType = generateRandomNumber(gen, 1, 3);
-
-		switch (robotType)
+		int robotClass = generateRandomNumber(gen, 0, 2);
+		switch (robotClass)
 		{
+		case 0:
+			{
+				std::cout << "EarthCrusher spawned..." << std::endl;
+				robots.push_back(std::make_unique<EarthCrusher>(true));
+				break;
+			}
 		case 1:
-			std::cout << "Robot " << i+1 << " chooses StarSweeper class " << std::endl;
-			robots.push_back(new StarSweeper(true));
-			break;		
+			{
+				std::cout << "Voidifier spawned..." << std::endl;
+				robots.push_back(std::make_unique<Voidifier>(true));
+				break;
+			}
 		case 2:
-			std::cout << "Robot " << i << " chooses EarthCrusher class " << std::endl;
-			robots.push_back(new EarthCrusher(true));
-			break;
-		case 3:
-			std::cout << "Robot " << i << " chooses Voidifier class " << std::endl;
-			robots.push_back(new Voidifier(true));
-			break;
-		default:
-			break;
+			{
+				std::cout << "Voidifier spawned..." << std::endl;
+				robots.push_back(std::make_unique<Voidifier>(true));
+				break;
+			}
 		}
-	}*/
+	}
+	// 
+	//robots.push_back(std::make_unique<EarthCrusher>(true));
 }
 
-void World::updateWorld(const Direction& movementDirection)
+void World::updateWorld()
 {
-	player->move(movementDirection);
-
-	// get copy of player column
-	std::vector<Block> playerColumn = getColumn(player->getPosition());
-
-	player->updateRobotHeight(playerColumn);
-	std::cout << "Player height lvl: " << player->getPosition().z << std::endl;
-
-	printRobotColumnValues(player->getPosition());
-
-	// pass it to mine function by reference and change it
-	player->mine(playerColumn);
-
-	// update world grid to new column
-	setColumn(playerColumn, player->getPosition());
-
-	printRobotColumnValues(player->getPosition());
-
-	// for AI robots -> randomized movement behaviour
-	for (auto robot : robots)
+	// AI robots -> randomized movement behaviour
+	for (auto& robot : robots)
 	{
-		if (robot->isAI())
-		{
-			robot->move(static_cast<Direction>(generateRandomNumber(gen, 0,4)));
-			//robot->mine(worldGrid);
-		}
+		robot->move(static_cast<Direction>(generateRandomNumber(gen, 0,4)));
+
+		std::vector<Block> robotColumn = getColumn(robot->getPosition());
+		robot->updateRobotHeight(robotColumn);
+		robot->mine(robotColumn);
+		robot->updateRobotHeight(robotColumn);
+		setColumn(robotColumn, robot->getPosition());
+
+		printRobotColumnValues(robot->getPosition());
 	}
+	checkWorldEmpty();
+
+	//iterationCounter++;
+	//if (iterationCounter > 200)
+	//{
+	//	exit(0);
+	//}
+	// 
+	// 
+	//auto moveMineUpdate = [&](std::unique_ptr<Robot>& robot, Direction direction) {
+	//	robot->move(direction);
+	//	std::vector<Block> robotColumn = getColumn(robot->getPosition());
+	//	robot->updateRobotHeight(robotColumn);
+	//	robot->mine(robotColumn);
+	//	robot->updateRobotHeight(robotColumn);
+	//	setColumn(robotColumn, robot->getPosition());
+
+	//	printRobotColumnValues(robot->getPosition());
+	//};
+
+	//for (auto& robot : robots)
+	//{
+	//	moveMineUpdate(robot, Direction::idle);		
+	//	moveMineUpdate(robot, Direction::idle);		
+	//	moveMineUpdate(robot, Direction::idle);		
+	//	moveMineUpdate(robot, Direction::idle);
+	//	moveMineUpdate(robot, Direction::forward);
+	//	moveMineUpdate(robot, Direction::backward);
+	//	moveMineUpdate(robot, Direction::left);
+	//	moveMineUpdate(robot, Direction::right);
+	//}
 }
 
 void World::renderWorld()
@@ -145,15 +142,15 @@ void World::renderWorld()
 			bool isRobot = false;
 
 			// if there is a robot on the highest field -> draw it, else draw the block
-			//for (const auto& robot : robots)
-			//{
-			//	if (robot->getPosition().x == currentPos.x && robot->getPosition().y == currentPos.y)
-			//	{
-			//		std::cout << "R ";
-			//		isRobot = true;
-			//		break;
-			//	}
-			//}
+			for (const auto& robot : robots)
+			{
+				if (robot->getPosition().x == currentPos.x && robot->getPosition().y == currentPos.y)
+				{
+					std::cout << "Ü ";
+					isRobot = true;
+					break;
+				}
+			}
 			// else print the highest z-value
 			if (!isRobot)
 			{
@@ -212,6 +209,25 @@ void World::printRobotColumnValues(const Vec3& robotColumn)
 	{
 		std::cout << "Z [" << z << "]: " << convertBlockToChar(worldGrid[robotColumn.x][robotColumn.y][z].getBlockType()) << std::endl;
 	}
+}
+
+const bool World::checkWorldEmpty()
+{
+	// check if the whole world grid is air
+	for(int z = 0; z < WorldDimensions::dimZ; z++)
+	{
+		for(int y = 0; y < WorldDimensions::dimY; y++)
+		{
+			for(int x = 0; x < WorldDimensions::dimX; x++)
+			{
+				if(worldGrid[x][y][z].getBlockType() != BlockType::air)
+				{
+					return false;
+				}
+			}
+		}
+	}
+	return true;
 }
 
 
