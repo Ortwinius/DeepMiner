@@ -1,19 +1,17 @@
 #include "world.h"
 
-World::World()
+World::World(int robotCount)
 	: rd()
 	, gen(rd())
 {
 	srand(time(0));
-	initWorld();
+	initWorld(robotCount);
 }
-
-int World::iterationCounter = 0;
 
 World::~World()
 {}
 
-void World::initWorld()
+void World::initWorld(int robotCount)
 {	
 	// clear and init worldgrid vector to 5*5*10
 	worldGrid.clear();
@@ -32,48 +30,36 @@ void World::initWorld()
 		}
 	}
 
-	// ask user for how many robots to spawn and then validate input for x robots
-	int robotCount = 0;
-	std::cout << "How many robots do you want to spawn? (1 - 6)" << std::endl;
-	std::cin >> robotCount;
-
-	while (std::cin.fail() || robotCount < 0 || robotCount > 6)
-	{
-		std::cout << "Please enter a valid number between 1 and 6" << std::endl;
-		std::cin.clear();
-		std::cin.ignore(128, '\n');
-		std::cin >> robotCount;
-	}
-
 	// create robots and add them to robots vector
 	
 	for(int i = 0; i < robotCount; i++)
 	{
-		int robotClass = generateRandomNumber(gen, 0, 2);
+		int robotClass = generateRandomNumber(gen, 1, DefaultValues::robotClassCount);
+		//int robotClass = 1;
 		switch (robotClass)
 		{
-		case 0:
-			{
-				std::cout << "EarthCrusher spawned..." << std::endl;
-				robots.push_back(std::make_unique<EarthCrusher>(true));
-				break;
-			}
 		case 1:
 			{
-				std::cout << "Voidifier spawned..." << std::endl;
-				robots.push_back(std::make_unique<Voidifier>(true));
+				//std::cout << "StarSweeper spawned..." << std::endl;
+				robots.push_back(std::make_unique<StarSweeper>(true));
 				break;
 			}
 		case 2:
 			{
-				std::cout << "Voidifier spawned..." << std::endl;
+				//std::cout << "EarthCrusher spawned..." << std::endl;
+				robots.push_back(std::make_unique<EarthCrusher>(true));
+				break;
+			}
+		case 3:
+			{
+				//std::cout << "Voidifier spawned..." << std::endl;
 				robots.push_back(std::make_unique<Voidifier>(true));
 				break;
 			}
+		default:
+			break;
 		}
 	}
-	// 
-	//robots.push_back(std::make_unique<EarthCrusher>(true));
 }
 
 void World::updateWorld()
@@ -81,47 +67,17 @@ void World::updateWorld()
 	// AI robots -> randomized movement behaviour
 	for (auto& robot : robots)
 	{
-		robot->move(static_cast<Direction>(generateRandomNumber(gen, 0,4)));
-
+		robot->move(gen);
 		std::vector<Block> robotColumn = getColumn(robot->getPosition());
 		robot->updateRobotHeight(robotColumn);
+
 		robot->mine(robotColumn);
 		robot->updateRobotHeight(robotColumn);
 		setColumn(robotColumn, robot->getPosition());
 
-		printRobotColumnValues(robot->getPosition());
+		//printRobotColumnValues(robot->getPosition());
 	}
 	checkWorldEmpty();
-
-	//iterationCounter++;
-	//if (iterationCounter > 200)
-	//{
-	//	exit(0);
-	//}
-	// 
-	// 
-	//auto moveMineUpdate = [&](std::unique_ptr<Robot>& robot, Direction direction) {
-	//	robot->move(direction);
-	//	std::vector<Block> robotColumn = getColumn(robot->getPosition());
-	//	robot->updateRobotHeight(robotColumn);
-	//	robot->mine(robotColumn);
-	//	robot->updateRobotHeight(robotColumn);
-	//	setColumn(robotColumn, robot->getPosition());
-
-	//	printRobotColumnValues(robot->getPosition());
-	//};
-
-	//for (auto& robot : robots)
-	//{
-	//	moveMineUpdate(robot, Direction::idle);		
-	//	moveMineUpdate(robot, Direction::idle);		
-	//	moveMineUpdate(robot, Direction::idle);		
-	//	moveMineUpdate(robot, Direction::idle);
-	//	moveMineUpdate(robot, Direction::forward);
-	//	moveMineUpdate(robot, Direction::backward);
-	//	moveMineUpdate(robot, Direction::left);
-	//	moveMineUpdate(robot, Direction::right);
-	//}
 }
 
 void World::renderWorld()
@@ -228,6 +184,33 @@ const bool World::checkWorldEmpty()
 		}
 	}
 	return true;
+}
+
+int World::getTotalMinableScore()
+{
+	int score = 0;
+	for (int z = 0; z < WorldDimensions::dimZ; z++)
+	{
+		for (int y = 0; y < WorldDimensions::dimY; y++)
+		{
+			for (int x = 0; x < WorldDimensions::dimX; x++)
+			{
+				score += convertBlockTypeToScoreValue(worldGrid[x][y][z].getBlockType());
+			}
+		}
+	}
+
+	return score;
+}
+
+int World::getTotalRobotScore()
+{
+	int score = 0;
+	for(auto &robot : robots)
+	{
+		score += robot->getScore();
+	}
+	return score;
 }
 
 

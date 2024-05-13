@@ -16,12 +16,12 @@ public:
 		// world grid -> column take highest value (z value of robot) and two below. 
 		// read the values and add them depending on rareness
 
-		std::cout << std::endl << "Starsweeper mines:" << std::endl;
+		//std::cout << std::endl << "Starsweeper mines:" << std::endl;
 
 		for (int z = this->pos.z, i = 0; z >= 0 && i < 3; z--, i++)
 		{
 			this->score += convertBlockTypeToScoreValue(robotColumn[z].getBlockType());
-			std::cout << convertBlockTypeToString(robotColumn[z].getBlockType()) << " mined..." << std::endl;
+			//std::cout << convertBlockTypeToString(robotColumn[z].getBlockType()) << " mined..." << std::endl;
 			robotColumn[z].setBlockType(BlockType::air);
 		}
 	}

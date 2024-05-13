@@ -4,6 +4,8 @@
 #include <random>
 #include "common.h"
 
+typedef std::mt19937 RandGen;
+
 class Robot
 {
 public:
@@ -21,10 +23,10 @@ public:
 	virtual void initRobot()
 	{
 		pos = Vec3(rand() % WorldDimensions::dimX, rand() % WorldDimensions::dimY, DefaultValues::startingHeight);
-		std::cout << "Initialized bot at pos (" << pos.x << ", " << pos.y << ", " << pos.z << ")" << std::endl;
+		//std::cout << "Initialized bot at pos (" << pos.x << ", " << pos.y << ", " << pos.z << ")" << std::endl;
 	}
 
-	virtual void move(const Direction& toMove);
+	virtual void move(RandGen& gen);
 
 	virtual void mine(std::vector<Block>& robotColumn) = 0;
 	

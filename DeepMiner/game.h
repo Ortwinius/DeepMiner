@@ -18,7 +18,10 @@ private:
 	std::unique_ptr<World> world;
 	Direction playerMovementDir;
 
+	int validateRobotCount();
 	void initGame();
 	void showRobotScores(const std::vector<std::unique_ptr<Robot>>& robots);
+	void showTotalRobotScore(int score);
+	void showTotalMinableScore(int score);
 
 };

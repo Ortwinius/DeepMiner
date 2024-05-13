@@ -8,47 +8,44 @@ public:
 	Voidifier(bool isAI) : Robot(isAI) {}
 	~Voidifier() = default;
 
-	// scans column for highest value block, mines it and sets it to stone
-	// then set it to stone and mine the highest block the player is standing on 
+	// scans column for highest value block, mines it and sets it to air
+    // the row collapses under the block being mined
 	// update score
 
 	void mine(std::vector<Block>& robotColumn) override
 	{
-		std::cout << std::endl << "Voidifier mines:" << std::endl;
+        int highestValue = -1; // Initialize with a low value
+        int highestValueIndex = -1; // Initialize with an invalid index
 
-		BlockType highestBlockType = BlockType::air;
-		
-		// look for highest block value
-		for (Block& block : robotColumn)
-		{
-			if (block.getBlockType() > highestBlockType)
-			{
-				highestBlockType = block.getBlockType();
-			}
-		}
+        for (int i = 0; i < robotColumn.size(); ++i)
+        {
+            if (robotColumn[i].getBlockType() > highestValue)
+            {
+                highestValue = robotColumn[i].getBlockType();
+                highestValueIndex = i;
+            }
+        }
 
-		// mine block with highest block value and set it to stone
-		for (Block& block : robotColumn)
-		{
-			if (block.getBlockType() == highestBlockType)
-			{
-				if (highestBlockType == BlockType::air)
-				{
-					std::cout << "No blocks to mine..." << std::endl;
-					return;
-				}
-				this->score += convertBlockTypeToScoreValue(block.getBlockType());
-				std::cout << convertBlockTypeToString(block.getBlockType()) << " mined..." << std::endl;
-				block.setBlockType(BlockType::stone);
-				break;
-			}
-		}
+        // If no blocks are present or all are air, return
+        if (highestValueIndex == -1)
+            return;
 
+        // Add the value of the highest block the player stands on and the highest value block to the score
+        this->score += convertBlockTypeToScoreValue(static_cast<BlockType>(highestValue));
+        robotColumn[highestValueIndex].setBlockType(BlockType::air);
+        
+        // if mined value is block player stands on -> return
+        if (this->pos.z == highestValueIndex)
+            return;
 
-		this->score += convertBlockTypeToScoreValue(robotColumn[this->pos.z].getBlockType());
-		std::cout << convertBlockTypeToString(robotColumn[this->pos.z].getBlockType()) << " mined..." << std::endl;
-		robotColumn[this->pos.z].setBlockType(BlockType::air);
+        // Move rest of the column elements above the mined block one position down
+        for (int i = highestValueIndex + 1; i < robotColumn.size(); ++i)
+        {
+            robotColumn[i - 1] = robotColumn[i];
+        }
 
+        // Set the last element to air
+        robotColumn[robotColumn.size() - 1].setBlockType(BlockType::air);
 	}
 
 };

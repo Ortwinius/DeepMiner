@@ -1,19 +1,20 @@
 #include "robot.h"
 
-void Robot::move(const Direction& toMove)
+void Robot::move(RandGen& gen)
 {
+	Direction toMove = static_cast<Direction>(generateRandomNumber(gen, 0, 4));
 	Vec3 delta = getDirectionVec(toMove);
 	Vec3 newPos = this->pos + delta;
 
 	if (isValidPosition(newPos))
 	{
-		std::cout << "Moving from (" << pos.x << "," << pos.y << "," << pos.z << ") to:" << std::endl;
+		//std::cout << "Moving from (" << pos.x << "," << pos.y << "," << pos.z << ") to:" << std::endl;
 		this->pos = newPos;
-		std::cout << "(" << pos.x << ", " << pos.y << ", " << pos.z << ")" << std::endl;
+		//std::cout << "(" << pos.x << ", " << pos.y << ", " << pos.z << ")" << std::endl;
 	}
 	else
 	{
-		std::cout << "Can't move here! Staying idle" << std::endl;
+		//std::cout << "Can't move here! Staying idle" << std::endl;
 	}
 }
 

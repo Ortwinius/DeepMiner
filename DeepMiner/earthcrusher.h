@@ -15,20 +15,20 @@ public:
 
 	void mine(std::vector<Block>& robotColumn) override
 	{
-		std::cout << std::endl << "EarthCrusher mines:" << std::endl;
+		//std::cout << std::endl << "EarthCrusher mines:" << std::endl;
 		
 		// sort blocks in descending order
 		std::sort(robotColumn.begin(), robotColumn.begin() + this->pos.z);
 		
 		if(robotColumn[this->pos.z].getBlockType() == BlockType::air)
 		{
-			std::cout << "Nothing to mine..." << std::endl;
+			//std::cout << "Nothing to mine..." << std::endl;
 			return;
 		}
 
 		// get highest block score (= where player currently stands)
-		this->score += convertBlockTypeToScoreValue(robotColumn[this->pos.z].getBlockType()) * ClassMultipliers::EarthCrusherM;
-		std::cout << convertBlockTypeToString(robotColumn[this->pos.z].getBlockType()) << " mined..." << std::endl;
+		this->score += convertBlockTypeToScoreValue(robotColumn[this->pos.z].getBlockType());
+		//std::cout << convertBlockTypeToString(robotColumn[this->pos.z].getBlockType()) << " mined..." << std::endl;
 
 		// set that value to air
 		robotColumn[this->pos.z].setBlockType(BlockType::air);
