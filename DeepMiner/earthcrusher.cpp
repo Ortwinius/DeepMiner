@@ -2,7 +2,6 @@
 
 /*
 EarthCrusher sorts column in descending order and mines the highest block.
-He purifies the mined element with a mulitplier of 1.5
 */
 
 void EarthCrusher::mine(std::vector<Block>& robotColumn)

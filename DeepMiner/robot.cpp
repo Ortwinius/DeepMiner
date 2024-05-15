@@ -1,11 +1,13 @@
 #include "robot.h"
 
-Robot::Robot()
+Robot::Robot(const std::string& name)
+	: name(name)
+	, score(0)
+	, alive(true)
+	, kills(0)
+	, dir(idle)
+	, pos(Vec3(0, 0, 0))
 {
-	score = 0;
-	dir = idle;
-	pos = Vec3(0, 0, 0);
-	alive = true;
 	initRobot();
 }
 
@@ -27,6 +29,20 @@ void Robot::move(WorldGrid& world, RandGen& gen)
 	}
 
 	updateRobotHeight(world[pos.x][pos.y]);
+}
+
+//attack other miner (on same field/next field) and kills him with 40% chance
+void Robot::attackRobot(Robot& other)
+{
+	// lockguard for mutual exclusion
+	std::lock_guard<std::mutex> lock(other.robotMutex);
+	//std::cout << std::endl << name << " attacks " << other.name << std::endl;
+	if (rand() % 100 < DefaultValues::RobotKillProb)
+	{
+		other.alive = false;
+		kills++;
+		//std::cout << "Robot killed!" << std::endl;
+	}
 }
 
 Vec3 Robot::getDirectionVec(const Direction& toMove)
@@ -76,3 +92,14 @@ void Robot::updateRobotHeight(std::vector<Block>& robotColumn)
 	this->pos.z = newHeight;
 }
 
+// for final score output
+void Robot::getRobotStats()
+{
+	std::cout << std::endl;
+	std::cout << "Robot: " << name << std::endl;
+	std::cout << "Score: " << score << std::endl;
+	std::cout << "Alive: " << (alive ? "true" : "false") << std::endl;
+	std::cout << "Kills: " << kills << std::endl;
+	std::cout << "Thread execution time: " << robotThreadExecutionTime << " ms" << std::endl;
+	std::cout << std::endl;
+}

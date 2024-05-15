@@ -1,5 +1,6 @@
 #include "utils.h"
 
+// returns a random number between min and max with mersenne twister engine
 int generateRandomNumber(std::mt19937& gen, int min, int max)
 {
 	std::uniform_int_distribution<int> distribution(min, max);
@@ -62,6 +63,13 @@ const std::string convertBlockTypeToString(const BlockType& blockType)
 	default:
 		return "Air";
 	}
+}
+
+// returns time in milliseconds
+double calculateDeltaTime(std::chrono::time_point<std::chrono::high_resolution_clock> startTime, std::chrono::time_point<std::chrono::high_resolution_clock> endTime)
+{
+	std::chrono::duration<double, std::milli> ds = endTime - startTime;
+	return ds.count(); 
 }
 
 

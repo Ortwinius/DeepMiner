@@ -1,7 +1,8 @@
 #include "starsweeper.h"
 
-// world grid -> column take highest value (z value of robot) and two below. 
-// read the values and add them depending on rareness
+/*
+Starsweeper mines the first three z-values of his column from above.
+*/
 
 void StarSweeper::mine(std::vector<Block>& robotColumn)
 {

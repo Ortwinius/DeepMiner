@@ -5,7 +5,6 @@
 	determine state of block by randomized value 
 	between 0 and 1 and the corresponding blocks tate
 */ 
-
 const BlockType& Block::createRandomBlockType(std::mt19937& gen)
 {
 	BlockType type = BlockType::air;
@@ -29,6 +28,5 @@ const BlockType& Block::createRandomBlockType(std::mt19937& gen)
 		type = BlockType::vibranium;
 	}
 
-	//std::cout << "Created block of type " << type << std::endl;
 	return type;
 }

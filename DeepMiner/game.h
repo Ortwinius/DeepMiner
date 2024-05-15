@@ -21,9 +21,8 @@ private:
 
 	int validateRobotCount();
 	void initGame();
-	void showRobotScores(const std::vector<std::unique_ptr<Robot>>& robots);
 	void showTotalRobotScore(int score);
 	void showTotalMinableScore(int score);
 	void showTotalExecutionTime(std::chrono::time_point<std::chrono::high_resolution_clock> start, std::chrono::time_point<std::chrono::high_resolution_clock> end);
-	
+	void showRobotStats(const std::vector<std::unique_ptr<Robot>>& robots);
 };

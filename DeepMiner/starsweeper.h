@@ -2,13 +2,14 @@
 
 #include "robot.h"
 
-/*Der Roboter nimmt sich den Wert seiner
-Koordinaten sowie der naechsten zwei z - Werte.*/
+/*
+Starsweeper mines the first three z-values of his column from above.
+*/
 
 class StarSweeper : public Robot
 {
 public:
-	StarSweeper() : Robot() {}
+	StarSweeper(const std::string& name) : Robot(name) {}
 	~StarSweeper() = default;
 
 	void mine(std::vector<Block>& robotColumn) override;

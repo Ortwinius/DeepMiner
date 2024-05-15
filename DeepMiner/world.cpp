@@ -3,14 +3,16 @@
 World::World(int robotCount)
 	: rd()
 	, gen(rd())
+	, totalMinableScore(0)
 {
 	srand(time(0));
-	initWorld(robotCount);
+	initWorld();
+	initRobots(robotCount);
 }
 
 World::~World() = default;
 
-void World::initWorld(int robotCount)
+void World::initWorld()
 {	
 	// clear and init worldgrid vector to 5*5*10
 	world.clear();
@@ -28,37 +30,42 @@ void World::initWorld(int robotCount)
 			}
 		}
 	}
+	totalMinableScore = calculateTotalMinableScore();
+}
 
-	// create robots and add them to robots vector
-	
-	for(int i = 0; i < robotCount; i++)
+// create robots randomly and add them to robots vector
+void World::initRobots(int robotCount)
+{
+	for (int i = 0; i < robotCount; i++)
 	{
+		const std::string name = "M_" + std::to_string(i + 1);
 		int robotClass = generateRandomNumber(gen, 1, DefaultValues::robotClassCount);
 
 		switch (robotClass)
 		{
 		case 1:
-			{
-				robots.push_back(std::make_unique<StarSweeper>());
-				break;
-			}
+		{
+			robots.push_back(std::make_unique<StarSweeper>(name));
+			break;
+		}
 		case 2:
-			{
-				robots.push_back(std::make_unique<EarthCrusher>());
-				break;
-			}
+		{
+			robots.push_back(std::make_unique<EarthCrusher>(name));
+			break;
+		}
 		case 3:
-			{
-				robots.push_back(std::make_unique<Voidifier>());
-				break;
-			}
+		{
+			robots.push_back(std::make_unique<Voidifier>(name));
+			break;
+		}
 		default:
 			break;
 		}
 	}
 }
 
-void World::runThreads()
+// run all robot threads in parallel by reserving one thread for each robot
+void World::runRobotThreads()
 {
 	// reserve space for all robots
 	robotThreads.reserve(robots.size());
@@ -69,24 +76,30 @@ void World::runThreads()
 		robotThreads.push_back(std::thread(&World::runRobot, this, std::ref(robot)));
 	}
 
-	for (auto& thread : robotThreads) {
+	for (auto& thread : robotThreads) 
+	{
 		thread.join();
 	}
 }
 
+// running one robot thread until he is dead or the world is empty
+// lock the column mutex before updating it (in robot->mine) so that no other robot can access it
 void World::runRobot(std::unique_ptr<Robot>& robot)
 {
+	auto startTime = Timer::now();
+
 	while (robot->isAlive() && !checkWorldEmpty())
 	{
 		robot->move(world, gen);
-		// lock the column mutex before updating it so that no other robot can access it
+
+		performAttack(robot);
+
 		std::lock_guard<std::mutex> lock(columnMutexes[robot->getPos().x][robot->getPos().y]);
-
 		robot->mine(getColumn(robot->getPos()));
-
-		// update column with new values
-		setColumn(getColumn(robot->getPos()), robot->getPos());
 	}
+
+	auto endTime = Timer::now();
+	robot->setThreadExecutionTime(calculateDeltaTime(startTime, endTime)); // save thread execution time in robot	
 }
 
 // getter for world grid column
@@ -96,16 +109,40 @@ std::vector<Block>& World::getColumn(const Vec3& pos)
 	return col;
 }
 
-// set world grid column at pos XY to values of newColumn
-void World::setColumn(const std::vector<Block>& newColumn, const Vec3& pos)
+// get all robots on the same and adjacent fields and attack them
+void World::performAttack(std::unique_ptr<Robot>& robot)
 {
-	int z = 0;
+	if(!robot->isAlive()) return;
 
-	while (z < dimZ)
+	for (Direction dir = Direction::idle; dir < Direction::right; dir = static_cast<Direction>(static_cast<int>(dir) + 1))
 	{
-		world[pos.x][pos.y][z] = newColumn[z];
-		z++;
+		Vec3 newPos = robot->getPos() + robot->getDirectionVec(dir);
+		std::set<Robot*> robots = getRobotsOnColumn(newPos);
+		robots.erase(robot.get()); // exclude current robot from attack to prevent self-attack
+
+		// attack all robots on the same column
+		for (auto& other : robots)
+		{
+			if (other->isAlive() && (robot->getPos().z == other->getPos().z))
+			{
+				robot->attackRobot(*other);
+			}
+		}
 	}
+}
+
+// return alive robots on the same column
+std::set<Robot*> World::getRobotsOnColumn(const Vec3& pos)
+{
+	std::set<Robot*> robotSet;
+	for (auto& robot : robots)
+	{
+		if (robot->isAlive() && robot->getPos().x == pos.x && robot->getPos().y == pos.y)
+		{
+			robotSet.insert(robot.get());
+		}
+	}
+	return robotSet;
 }
 
 int World::getColumnHeight(int x, int y)
@@ -149,7 +186,7 @@ const bool World::checkWorldEmpty()
 	return true;
 }
 
-int World::getTotalMinableScore()
+int World::calculateTotalMinableScore()
 {
 	int score = 0;
 	for (int z = 0; z < dimZ; z++)
@@ -176,6 +213,7 @@ int World::getTotalRobotScore()
 	return score;
 }
 
+// NOTE: not used for parallel deep miner implementation
 void World::renderWorld()
 {
 	std::cout << std::endl;

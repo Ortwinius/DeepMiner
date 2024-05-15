@@ -1,9 +1,8 @@
 #include "voidifier.h"
 
-// scans column for highest value block, mines it and sets it to air
-// the row collapses under the block being mined
-// update score
-
+/*
+Voidifier xray-mines the most-valuable block, the column collapses under him (= moves down by one block).
+*/
 void Voidifier::mine(std::vector<Block>& robotColumn)
 {
     int highestValue = -1; // Initialize with a low value

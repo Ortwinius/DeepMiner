@@ -36,26 +36,19 @@ void Game::initGame()
 
 void Game::run()
 {
+	// show total minable score
 	showTotalMinableScore(world->getTotalMinableScore());
 
-	// main game loop without handleInput and render because of automated parallelized flow
+	// main "game loop" without handleInput and render for parallel deep miner implementation
 	auto startTime = Timer::now();
-	world->runThreads();
+	world->runRobotThreads();
 	auto endTime = Timer::now();
 
 	// show final score
-	showTotalRobotScore(world->getTotalRobotScore());
+	showRobotStats(world->getRobots());
 	showTotalExecutionTime(startTime, endTime);
-}
-
-void Game::showRobotScores(const std::vector<std::unique_ptr<Robot>>& robots)
-{
-	int i = 1;
-	for (auto& robot : robots)
-	{
-		std::cout << "Robot " << i << " score: " << robot->getScore() << std::endl;
-		i++;
-	}
+	showTotalMinableScore(world->getTotalMinableScore());
+	showTotalRobotScore(world->getTotalRobotScore());
 }
 
 void Game::showTotalRobotScore(int score)
@@ -65,17 +58,18 @@ void Game::showTotalRobotScore(int score)
 
 void Game::showTotalMinableScore(int score)
 {
-	std::cout << "Total sum of minable score points: " << score << std::endl;
+	std::cout << "Total sum of possible minable score points: " << score << std::endl;
 }
 
 void Game::showTotalExecutionTime(std::chrono::time_point<std::chrono::high_resolution_clock> startTime, std::chrono::time_point<std::chrono::high_resolution_clock> endTime)
 {
-	std::chrono::duration<float> fs = endTime - startTime;
-	auto d = std::chrono::duration_cast<std::chrono::milliseconds>(fs);
-	std::cout << "Total execution time: " << fs.count() << " s" << std::endl;
+	std::cout << "Total execution time: " << calculateDeltaTime(startTime, endTime) << " ms" << std::endl;
 }
 
-//void Game::render()
-//{
-//	world->renderWorld();
-//}
+void Game::showRobotStats(const std::vector<std::unique_ptr<Robot>>& robots)
+{
+	for (auto& robot : robots)
+	{
+		robot->getRobotStats();
+	}
+}

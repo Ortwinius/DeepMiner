@@ -30,8 +30,9 @@ namespace DefaultValues
 {
 	constexpr int startingHeight = 9;
 	constexpr int minRobotCount = 1; 
-	constexpr int maxRobotCount = 100;
+	constexpr int maxRobotCount = 3000;
 	constexpr int robotClassCount = 3;
+	constexpr int RobotKillProb = 20;
 }
 
 namespace BlockTypeProbs
