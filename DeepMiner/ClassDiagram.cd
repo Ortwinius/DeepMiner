@@ -1,0 +1,113 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Block">
+    <Position X="11.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAEAAAAAIAAAAAAAACgAAAAAAAAAAgAAAAgAAAAAAA=</HashCode>
+      <FileName>block.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EarthCrusher">
+    <Position X="4.75" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAA=</HashCode>
+      <FileName>earthcrusher.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Game">
+    <Position X="9.25" Y="0.5" Width="1.5" />
+    <NestedTypes>
+      <Typedef Name="Game::Timer" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>game.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Typedef>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AEAAEgAgAAAAAAAAAAAAAAAAQEiAAkAAAAAAAAAAAAA=</HashCode>
+      <FileName>game.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Robot" Collapsed="true">
+    <Position X="2.75" Y="3" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Typedef Name="Robot::RandGen" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>robot.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Typedef>
+      <Typedef Name="Robot::WorldGrid" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>robot.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Typedef>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>EIAAEAgCACAIAACAwAEIAJCABAAMAACICAIEAAEAAAA=</HashCode>
+      <FileName>robot.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StarSweeper">
+    <Position X="2.75" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAACAgAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>starsweeper.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vec3" Collapsed="true">
+    <Position X="13.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAABgAQEAAAA=</HashCode>
+      <FileName>vec3.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Voidifier">
+    <Position X="0.75" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAACAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAA=</HashCode>
+      <FileName>voidifier.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="World">
+    <Position X="7" Y="0.5" Width="1.5" />
+    <NestedTypes>
+      <Typedef Name="World::WorldGrid" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>world.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Typedef>
+      <Typedef Name="World::RandGen" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>world.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Typedef>
+      <Typedef Name="World::Timer" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>world.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Typedef>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AEIAAgAAEFAAAAAIQAAEQBAAAABjAAIkAACAAEAAEJA=</HashCode>
+      <FileName>world.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Enum Name="Direction" Collapsed="true">
+    <Position X="2.75" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgAAAAACwAAAAAAAAAAAAAAIAAAAAAAAAgAAgAA=</HashCode>
+      <FileName>constants.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="BlockType" Collapsed="true">
+    <Position X="1" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAQAAAAABAAAAAAAAAAAAAAARAAAAAAAAAAAAIAA=</HashCode>
+      <FileName>constants.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

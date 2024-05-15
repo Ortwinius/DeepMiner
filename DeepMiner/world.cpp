@@ -102,13 +102,6 @@ void World::runRobot(std::unique_ptr<Robot>& robot)
 	robot->setThreadExecutionTime(calculateDeltaTime(startTime, endTime)); // save thread execution time in robot	
 }
 
-// getter for world grid column
-std::vector<Block>& World::getColumn(const Vec3& pos)
-{
-	std::vector<Block>& col = worldGrid[pos.x][pos.y];
-	return col;
-}
-
 // get all robots on the same and adjacent fields and attack them
 void World::performAttack(std::unique_ptr<Robot>& robot)
 {
@@ -145,6 +138,13 @@ std::set<Robot*> World::getRobotsOnColumn(const Vec3& pos)
 	return robotSet;
 }
 
+// getter for world grid column
+std::vector<Block>& World::getColumn(const Vec3& pos)
+{
+	std::vector<Block>& col = worldGrid[pos.x][pos.y];
+	return col;
+}
+
 int World::getColumnHeight(int x, int y)
 {
 	int h = 0;
@@ -154,17 +154,6 @@ int World::getColumnHeight(int x, int y)
 			h++;
 	}
 	return h;
-}
-
-void World::printRobotColumnValues(const Vec3& robotColumn)
-{
-	std::cout << "Column [" << robotColumn.x << "] [" << robotColumn.y << "] Z values: " << std::endl;
-
-	// descending order
-	for (int z = dimZ - 1; z >= 0; z--)
-	{
-		std::cout << "Z [" << z << "]: " << convertBlockToChar(worldGrid[robotColumn.x][robotColumn.y][z].getBlockType()) << std::endl;
-	}
 }
 
 const bool World::checkWorldEmpty()
@@ -201,6 +190,18 @@ int World::calculateTotalMinableScore()
 	}
 
 	return score;
+}
+
+// for debugging only
+void World::printRobotColumnValues(const Vec3& robotColumn)
+{
+	std::cout << "Column [" << robotColumn.x << "] [" << robotColumn.y << "] Z values: " << std::endl;
+
+	// descending order
+	for (int z = dimZ - 1; z >= 0; z--)
+	{
+		std::cout << "Z [" << z << "]: " << convertBlockToChar(worldGrid[robotColumn.x][robotColumn.y][z].getBlockType()) << std::endl;
+	}
 }
 
 int World::getTotalRobotScore()
