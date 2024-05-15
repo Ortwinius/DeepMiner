@@ -13,7 +13,7 @@ Robot::Robot(const std::string& name)
 
 void Robot::initRobot()
 {
-	pos = Vec3(rand() % WorldDimensions::dimX, rand() % WorldDimensions::dimY, DefaultValues::startingHeight);
+	this->pos = Vec3(rand() % WorldDimensions::dimX, rand() % WorldDimensions::dimY, DefaultValues::startingHeight);
 }
 
 void Robot::move(WorldGrid& world, RandGen& gen)
@@ -40,7 +40,7 @@ void Robot::attackRobot(Robot& other)
 	if (rand() % 100 < DefaultValues::RobotKillProb)
 	{
 		other.alive = false;
-		kills++;
+		this->kills++;
 		//std::cout << "Robot killed!" << std::endl;
 	}
 }

@@ -7,31 +7,10 @@ Game::Game()
 
 Game::~Game() = default;
 
-int Game::validateRobotCount()
-{
-	// ask user for how many robots to spawn and then validate input for x robots
-	int robotCount = 0;
-	std::cout << "How many robots do you want to spawn? (" << DefaultValues::minRobotCount << " - " << DefaultValues::maxRobotCount << ")" << std::endl;
-	std::cin >> robotCount;
-
-	while (std::cin.fail() 
-		|| robotCount < DefaultValues::minRobotCount
-			|| robotCount > DefaultValues::maxRobotCount)
-	{
-		std::cout << "Please enter a valid number between " << DefaultValues::minRobotCount << " and " << DefaultValues::maxRobotCount << std::endl;
-		std::cin.clear();
-		std::cin.ignore(128, '\n');
-		std::cin >> robotCount;
-	}
-
-	return robotCount;
-}
-
 void Game::initGame()
 {
-	isRunning = true;
 	int robotCount = validateRobotCount();
-	world = std::make_unique<World>(robotCount);
+	this->world = std::make_unique<World>(robotCount);
 }
 
 void Game::run()
@@ -41,7 +20,7 @@ void Game::run()
 
 	// main "game loop" without handleInput and render for parallel deep miner implementation
 	auto startTime = Timer::now();
-	world->runRobotThreads();
+	this->world->runRobotThreads();
 	auto endTime = Timer::now();
 
 	// show final score
@@ -49,6 +28,26 @@ void Game::run()
 	showTotalExecutionTime(startTime, endTime);
 	showTotalMinableScore(world->getTotalMinableScore());
 	showTotalRobotScore(world->getTotalRobotScore());
+}
+
+int Game::validateRobotCount()
+{
+	// ask user for how many robots to spawn and then validate input for x robots
+	int robotCount = 0;
+	std::cout << "How many robots do you want to spawn? (" << DefaultValues::minRobotCount << " - " << DefaultValues::maxRobotCount << ")" << std::endl;
+	std::cin >> robotCount;
+
+	while (std::cin.fail()
+		|| robotCount < DefaultValues::minRobotCount
+		|| robotCount > DefaultValues::maxRobotCount)
+	{
+		std::cout << "Please enter a valid number between " << DefaultValues::minRobotCount << " and " << DefaultValues::maxRobotCount << std::endl;
+		std::cin.clear();
+		std::cin.ignore(128, '\n');
+		std::cin >> robotCount;
+	}
+
+	return robotCount;
 }
 
 void Game::showTotalRobotScore(int score)

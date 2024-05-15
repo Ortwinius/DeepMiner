@@ -36,7 +36,7 @@ private:
 	typedef std::mt19937 RandGen;
 	typedef std::chrono::high_resolution_clock Timer;
 
-	WorldGrid world; 
+	WorldGrid worldGrid; 
 	std::vector<std::unique_ptr<Robot>> robots;
 	std::vector<std::thread> robotThreads;
 	std::mutex columnMutexes[dimX][dimY];

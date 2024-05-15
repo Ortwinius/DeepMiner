@@ -15,8 +15,8 @@ World::~World() = default;
 void World::initWorld()
 {	
 	// clear and init worldgrid vector to 5*5*10
-	world.clear();
-	world.resize(dimX, std::vector<std::vector<Block>>
+	this->worldGrid.clear();
+	this->worldGrid.resize(dimX, std::vector<std::vector<Block>>
 		(dimY, std::vector<Block>(dimZ)));
 
 	// create random blocks with gen-randomizer 
@@ -26,11 +26,11 @@ void World::initWorld()
 		{
 			for (int x = 0; x < dimX; x++)
 			{
-				world[x][y][z] = Block(gen);
+				this->worldGrid[x][y][z] = Block(gen);
 			}
 		}
 	}
-	totalMinableScore = calculateTotalMinableScore();
+	this->totalMinableScore = calculateTotalMinableScore();
 }
 
 // create robots randomly and add them to robots vector
@@ -45,17 +45,17 @@ void World::initRobots(int robotCount)
 		{
 		case 1:
 		{
-			robots.push_back(std::make_unique<StarSweeper>(name));
+			this->robots.push_back(std::make_unique<StarSweeper>(name));
 			break;
 		}
 		case 2:
 		{
-			robots.push_back(std::make_unique<EarthCrusher>(name));
+			this->robots.push_back(std::make_unique<EarthCrusher>(name));
 			break;
 		}
 		case 3:
 		{
-			robots.push_back(std::make_unique<Voidifier>(name));
+			this->robots.push_back(std::make_unique<Voidifier>(name));
 			break;
 		}
 		default:
@@ -68,15 +68,15 @@ void World::initRobots(int robotCount)
 void World::runRobotThreads()
 {
 	// reserve space for all robots
-	robotThreads.reserve(robots.size());
+	this->robotThreads.reserve(robots.size());
 
 	// run robots in parallel
 	for (auto& robot : robots)
 	{
-		robotThreads.push_back(std::thread(&World::runRobot, this, std::ref(robot)));
+		this->robotThreads.push_back(std::thread(&World::runRobot, this, std::ref(robot)));
 	}
 
-	for (auto& thread : robotThreads) 
+	for (auto& thread : this->robotThreads) 
 	{
 		thread.join();
 	}
@@ -90,11 +90,11 @@ void World::runRobot(std::unique_ptr<Robot>& robot)
 
 	while (robot->isAlive() && !checkWorldEmpty())
 	{
-		robot->move(world, gen);
+		robot->move(this->worldGrid, this->gen);
 
 		performAttack(robot);
 
-		std::lock_guard<std::mutex> lock(columnMutexes[robot->getPos().x][robot->getPos().y]);
+		std::lock_guard<std::mutex> lock(this->columnMutexes[robot->getPos().x][robot->getPos().y]);
 		robot->mine(getColumn(robot->getPos()));
 	}
 
@@ -105,7 +105,7 @@ void World::runRobot(std::unique_ptr<Robot>& robot)
 // getter for world grid column
 std::vector<Block>& World::getColumn(const Vec3& pos)
 {
-	std::vector<Block>& col = world[pos.x][pos.y];
+	std::vector<Block>& col = worldGrid[pos.x][pos.y];
 	return col;
 }
 
@@ -150,7 +150,7 @@ int World::getColumnHeight(int x, int y)
 	int h = 0;
 	for (int z = 0; z < dimZ; z++)
 	{
-		if (world[x][y][z].getBlockType() != BlockType::air)
+		if (this->worldGrid[x][y][z].getBlockType() != BlockType::air)
 			h++;
 	}
 	return h;
@@ -163,7 +163,7 @@ void World::printRobotColumnValues(const Vec3& robotColumn)
 	// descending order
 	for (int z = dimZ - 1; z >= 0; z--)
 	{
-		std::cout << "Z [" << z << "]: " << convertBlockToChar(world[robotColumn.x][robotColumn.y][z].getBlockType()) << std::endl;
+		std::cout << "Z [" << z << "]: " << convertBlockToChar(worldGrid[robotColumn.x][robotColumn.y][z].getBlockType()) << std::endl;
 	}
 }
 
@@ -176,7 +176,7 @@ const bool World::checkWorldEmpty()
 		{
 			for(int x = 0; x < dimX; x++)
 			{
-				if(world[x][y][z].getBlockType() != BlockType::air)
+				if(worldGrid[x][y][z].getBlockType() != BlockType::air)
 				{
 					return false;
 				}
@@ -195,7 +195,7 @@ int World::calculateTotalMinableScore()
 		{
 			for (int x = 0; x < dimX; x++)
 			{
-				score += convertBlockTypeToScoreValue(world[x][y][z].getBlockType());
+				score += convertBlockTypeToScoreValue(this->worldGrid[x][y][z].getBlockType());
 			}
 		}
 	}
@@ -206,7 +206,7 @@ int World::calculateTotalMinableScore()
 int World::getTotalRobotScore()
 {
 	int score = 0;
-	for(auto &robot : robots)
+	for(auto &robot : this->robots)
 	{
 		score += robot->getScore();
 	}
@@ -232,7 +232,7 @@ void World::renderWorld()
 			bool isRobot = false;
 
 			// if there is a robot on the highest field -> draw it, else draw the block
-			for (const auto& robot : robots)
+			for (const auto& robot : this->robots)
 			{
 				if (robot->getPos().x == currentPos.x && robot->getPos().y == currentPos.y)
 				{
@@ -244,7 +244,7 @@ void World::renderWorld()
 			// else print the highest z-value
 			if (!isRobot)
 			{
-				std::cout << convertBlockToChar(world[x][y][columnHeight].getBlockType()) << " ";
+				std::cout << convertBlockToChar(this->worldGrid[x][y][columnHeight].getBlockType()) << " ";
 			}
 		}
 		std::cout << std::endl;

@@ -16,7 +16,6 @@ public:
 private:
 	typedef std::chrono::high_resolution_clock Timer;
 
-	bool isRunning = false;
 	std::unique_ptr<World> world;
 
 	int validateRobotCount();
